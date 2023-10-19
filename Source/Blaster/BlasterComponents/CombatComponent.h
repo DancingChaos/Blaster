@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "CombatComponent.generated.h"
 
+class AWeapon;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BLASTER_API UCombatComponent : public UActorComponent
@@ -15,10 +16,17 @@ class BLASTER_API UCombatComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UCombatComponent();
+	friend class ABlasterCharacter;
 
+	void EquipWeapon(class AWeapon * WeaponToEquip);
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+private:
+
+	class ABlasterCharacter* Character;
+  AWeapon* EquippedWeapon;
 
 public:	
 	// Called every frame

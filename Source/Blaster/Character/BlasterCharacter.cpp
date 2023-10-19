@@ -35,7 +35,6 @@ ABlasterCharacter::ABlasterCharacter()
 	Combat->SetIsReplicated(true);
 }
 
-
 void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -64,6 +63,14 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis("MoveRight", this, &ABlasterCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &ABlasterCharacter::Turn);
 	PlayerInputComponent->BindAxis("LookUp", this, &ABlasterCharacter::LookUp);
+}
+
+void ABlasterCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (Combat)
+		Combat->Character = this;
 }
 
 void ABlasterCharacter::MoveForward(float Value)
@@ -100,7 +107,19 @@ void ABlasterCharacter::LookUp(float Value)
 
 void ABlasterCharacter::EquipBtnPressed()
 {
+	if (Combat)
+	{
+		if (HasAuthority())
+			Combat->EquipWeapon(OverlappingWeapon);
+		else
+			ServerEquipButtonPressed();
+	}
+}
 
+void ABlasterCharacter::ServerEquipButtonPressed_Implementation()
+{
+	if (Combat)
+		Combat->EquipWeapon(OverlappingWeapon);
 }
 
 void ABlasterCharacter::OnRep_OverlappingWeapon(AWeapon * LastWeapon)
