@@ -35,7 +35,7 @@ void UOverheadWidget::ShowPlayerNetRole(APawn* InPawn)
   }
 
   //FString RemoteRoleString = FString::Printf(TEXT("Local Role: %s"), *Role);
-  SetDisplayText(Role);
+  SetDisplayText("");
 }
 
 void UOverheadWidget::NativeDestruct()
