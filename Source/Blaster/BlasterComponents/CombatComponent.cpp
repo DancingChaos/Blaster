@@ -13,6 +13,8 @@
 UCombatComponent::UCombatComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+	BaseWalkSpeed = 600.f;
+	AimWalkSpeed = 300.f;
 }
 
 void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
@@ -37,17 +39,27 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	if (Character)
+	{
+		Character->GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+	}
 }
 
 void UCombatComponent::SetAiming(bool IsAiming)
 {
 	bIsAiming = IsAiming;
   ServerSetAiming(IsAiming);
+
+	if (Character)
+		Character->GetCharacterMovement()->MaxWalkSpeed = bIsAiming ? AimWalkSpeed : BaseWalkSpeed;
 }
 
 void UCombatComponent::ServerSetAiming_Implementation(bool IsAiming)
 {
 	bIsAiming = IsAiming;
+	if (Character)
+		Character->GetCharacterMovement()->MaxWalkSpeed = bIsAiming ? AimWalkSpeed : BaseWalkSpeed;
 }
 
 void UCombatComponent::OnRep_EquippedWeapon()
